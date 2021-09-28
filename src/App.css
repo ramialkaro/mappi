@@ -9,6 +9,13 @@
   font-weight:700;
 }
 
+.list-of-places {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100vw;
+  height:100vh;
+}
 .map-container {
     width: 100vw;
     height: 100vh;
