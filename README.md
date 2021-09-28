@@ -25,6 +25,6 @@ Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 
-### env Variables
+### env variables
 
 You need to get your own Google Map apiKey from [https://developers.google.com/maps](https://developers.google.com/maps) then make it as value for **REACT_APP_GOOGLE_KEY** value in the production/development to make sure the Google Map work. 
