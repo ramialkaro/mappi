@@ -1,10 +1,9 @@
-import './App.css';
+import Routes from './components/Routes.js'
+import './App.css'
 
 function App() {
   return (
-    <div className="App">
-     Mappi App
-    </div>
+    <Routes />
   );
 }
 
