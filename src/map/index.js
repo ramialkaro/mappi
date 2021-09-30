@@ -1,50 +1,88 @@
-import React from 'react'
+import React, {useEffect, useState} from "react"
 import {
-  GoogleMap,
-  withGoogleMap,
-  withScriptjs
-} from 'react-google-maps'
+    GoogleMap,
+    withGoogleMap,
+    withScriptjs,
+    Marker,
+    InfoWindow,
+  } from "react-google-maps"
+import styles from './mapStyles'
+import "../App.css"
+import { v4 as uuidv4 } from 'uuid';
 
-function Map(){
+  function Map(){
+    const [markers, setMarkers] = useState([])
+    const [selected, setSelected] = useState(null)
 
-  return(
-    <GoogleMap
-      defaultZoom={12}
-      defaultCenter={{
-        lat: 60.1822059,
-        lng: 24.953831
-      }}
-      defaultOptions={{
-        disableDefaultUI:true,
-        zoomControl:true
-      }}
-    />
-  )
-}
+    let localPlacesList = localStorage.getItem("places")
+    
 
-export const WrappedMap = withScriptjs(withGoogleMap(Map))
+    useEffect(()=>{
+      markers.length > 0 && localStorage.setItem("places", JSON.stringify(markers))
+    }, [markers])
 
-export default function MapView(){
-  let apiKey = process.env.REACT_APP_GOOGLE_KEY
+    useEffect(()=>{ 
+      localPlacesList && setMarkers(JSON.parse(localPlacesList))
+    }, [localPlacesList])
+    
+    
+    return(
+      <GoogleMap
+        defaultZoom ={12}
+        defaultOptions={{
+          styles,
+          disableDefaultUI:true,
+          zoomControl:true
+        }}
+        defaultCenter={{lat:60.182059, lng:24.935831}}
+        onClick={(event) => {
+          console.log(event)
+          setMarkers(preState => 
+            [...preState, 
+            { 
+              lat: event.latLng.lat(), 
+              lng: event.latLng.lng(), 
+              placeId: uuidv4(),
+            }])
+        }}
+      >
+        {
+          markers.map( (marker) => (
+            <Marker
+              key={marker.placeId}
+              position={{lat:marker.lat, lng:marker.lng}}
+              onClick={()=> {setSelected(marker)}}
+            />
+          ))
+        }
+        {
+          selected ? (<InfoWindow position={{lat: selected.lat, lng: selected.lng}} onCloseClick={()=> {setSelected(null)}}>
+            <div>
+              <h2>Testing</h2>
+            </div>
+          </InfoWindow> ) :null
+        }
 
-  if(!apiKey){
-    return ( 
-      <div className="no-map">PLZ check the Google Map API Key </div>
+      </GoogleMap>
+  
     )
   }
+  
+ export const WrappedMap = withScriptjs(withGoogleMap(Map))
 
-  return(
-    <article className="map-container">
-      <h1 className="logo" > Mappi <span role="img" aria-label="mappi">🏟️</span> </h1>
-      
-      <WrappedMap 
-        googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${apiKey}`}
-        loadingElement={<div className="h-100"/>}
-        containerElement={<div className="h-100"/>}
-        mapElement={<div className="h-100"/>}
-
-      />
-
-    </article>
-  )
-}
+ export default function MapView(){
+   let apiKey = process.env.REACT_APP_GOOGLE_KEY
+   return (
+    <div className="map-container">
+      <h1 className="logo"> Mappi <span role="img" aria-label="mappi">🏟️</span></h1>
+        <WrappedMap
+          googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${
+          apiKey}`}
+          loadingElement={ <div className="h-100"/> }
+          containerElement={ <div className="h-100"/> }
+          mapElement={ <div className="h-100"/> }
+        />
+  </div>
+   )
+ }
+  
