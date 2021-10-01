@@ -1,25 +1,24 @@
-import React, { useState } from 'react'
+import React, { useContext} from 'react'
 import { List, ListItem, Divider, ListItemText, Avatar, Typography, ListItemAvatar, IconButton, Fab } from '@mui/material'
 import { Delete, PushPin as PushPinIcon } from '@mui/icons-material'
 import Geocode from 'react-geocode'
+import {PlacesContext} from '../PlacesContext'
 
-export default function ListPlaces({data}) {
+export default function ListPlaces() {
 
-    const [state, setState] = useState(data)
+    const { listOfPlaces , setListOfPlaces} = useContext(PlacesContext)
 
     const removePlace = (id) =>{
         var deleted = window.confirm(`Do you want to unpin this locaiton?`)
-        var localPlacesList = JSON.parse(localStorage.getItem("places"))
-        var places = localPlacesList.filter(p => p.placeId !== id)
-        deleted && localStorage.setItem("places", JSON.stringify(places)) 
-        setState(places)
+        var placesAfterFiler = listOfPlaces.filter(p => p.placeId !== id)
+        deleted && localStorage.setItem("places", JSON.stringify(placesAfterFiler)) 
+        setListOfPlaces(placesAfterFiler)
     }
 
     const clearPlaces = ()=> {
         var isClear = window.confirm("Do you want to reset?")
         isClear &&  localStorage.clear()
-        setState([])
-        document.location.reload()
+        setListOfPlaces([])
     }
     Geocode.setApiKey(process.env.REACT_APP_GOOGLE_KEY)
 
@@ -28,7 +27,7 @@ export default function ListPlaces({data}) {
         <List sx={{width:'100%', bgcolor:'background.paper'}}>
             {
                 
-                state && state.map(place=>{
+                listOfPlaces && listOfPlaces.map(place=>{
                    return(
                 <div  key={place.placeId}>
                     <>
