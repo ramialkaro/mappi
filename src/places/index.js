@@ -1,21 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext} from 'react'
 import ListPlaces from './ListPlaces'
 import EmptyPlaces from './EmptyPlaces'
+import { PlacesContext } from '../PlacesContext'
 
 export default function Index() {
-
-    const [places, setPlaces] = useState([])
-    let localPlacesList = localStorage.getItem("places")
-
-    useEffect(()=>{
-        localPlacesList && setPlaces(JSON.parse(localPlacesList))
-    }, [localPlacesList])
+    const { listOfPlaces } = useContext(PlacesContext)
     
     return (
         <div >
             {
-                places.length > 0? 
-                <ListPlaces data={places}/> :    
+                listOfPlaces.length > 0? 
+                <ListPlaces /> :    
                 <EmptyPlaces /> 
             }
         </div>
