@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, {useContext, useState} from "react"
 import {
     GoogleMap,
     withGoogleMap,
@@ -9,23 +9,14 @@ import {
 import styles from './mapStyles'
 import "../App.css"
 import { v4 as uuidv4 } from 'uuid';
+import { PlacesContext } from "../PlacesContext";
 
-  function Map(){
-    const [markers, setMarkers] = useState([])
+
+function Map(){
+    const {listOfPlaces, setListOfPlaces} = useContext(PlacesContext) 
     const [selected, setSelected] = useState(null)
 
-    let localPlacesList = localStorage.getItem("places")
-    
 
-    useEffect(()=>{
-      markers.length > 0 && localStorage.setItem("places", JSON.stringify(markers))
-    }, [markers])
-
-    useEffect(()=>{ 
-      localPlacesList && setMarkers(JSON.parse(localPlacesList))
-    })
-    
-    
     return(
       <GoogleMap
         defaultZoom ={12}
@@ -37,7 +28,7 @@ import { v4 as uuidv4 } from 'uuid';
         defaultCenter={{lat:60.182059, lng:24.935831}}
         onClick={(event) => {
           console.log(event)
-          setMarkers(preState => 
+          setListOfPlaces(preState => 
             [...preState, 
             { 
               lat: event.latLng.lat(), 
@@ -47,7 +38,7 @@ import { v4 as uuidv4 } from 'uuid';
         }}
       >
         {
-          markers.map( (marker) => (
+          listOfPlaces.map( (marker) => (
             <Marker
               key={marker.placeId}
               position={{lat:marker.lat, lng:marker.lng}}
