@@ -20,7 +20,8 @@ function Map(){
     useEffect(() => {
       localStorage.setItem("places", JSON.stringify(listOfPlaces))
     }, [listOfPlaces])
-    
+
+
     return(
       <GoogleMap
         defaultZoom ={12}
@@ -31,13 +32,14 @@ function Map(){
         }}
         defaultCenter={{lat:60.182059, lng:24.935831}}
         onClick={(event) => {
-          console.log(event)
           setListOfPlaces(preState => 
             [...preState, 
-            { 
-              lat: event.latLng.lat(), 
-              lng: event.latLng.lng(), 
-              placeId: uuidv4(),
+            {
+              id: uuidv4(),
+              placeId:'',
+              lat: event.latLng.lat(),
+              lng: event.latLng.lng(),
+              address: {},
               pickupDate: DateTime()
             }])
         }}
@@ -47,14 +49,15 @@ function Map(){
             <Marker
               key={marker.placeId}
               position={{lat:marker.lat, lng:marker.lng}}
-              onClick={()=> {setSelected(marker)}}
+              onClick={()=> setSelected(marker)}
             />
           ))
         }
         {
-          selected ? (<InfoWindow position={{lat: selected.lat, lng: selected.lng}} onCloseClick={()=> {setSelected(null)}}>
+          selected ? (<InfoWindow position={{lat: selected.lat, lng: selected.lng}} onCloseClick={()=> setSelected(null)}>
             <div>
-              <h2>Testing</h2>
+              <h2><span>Address: </span> {selected.address}</h2>
+              <p><span>Pickup date: </span> {selected.pickupDate}</p>
             </div>
           </InfoWindow> ) :null
         }
@@ -72,7 +75,7 @@ function Map(){
     <div className="map-container">
       <h1 className="logo"> Mappi <span role="img" aria-label="mappi">🏟️</span></h1>
         <WrappedMap
-          googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${
+          googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=${
           apiKey}`}
           loadingElement={ <div className="h-100"/> }
           containerElement={ <div className="h-100"/> }
