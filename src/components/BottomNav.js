@@ -8,12 +8,12 @@ export default function BottomNav() {
   let path = useLocation().pathname
 
   useEffect(() => {
-   path==="/favorites" && setValue(1)
+   path==="/places" && setValue(1)
   }, [path])
 
   return (
 
-<Paper sx={{position: 'fixed', bottom:0, left:0, right:0}}>
+<Paper sx={{position: 'fixed', bottom:0, left:0, right:0, height:'6vh'}}>
       <BottomNavigation
         showLabels
         value={value}
