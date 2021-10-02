@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react"
+import React, {useContext, useState, useEffect} from "react"
 import {
     GoogleMap,
     withGoogleMap,
@@ -10,13 +10,17 @@ import styles from './mapStyles'
 import "../App.css"
 import { v4 as uuidv4 } from 'uuid';
 import { PlacesContext } from "../PlacesContext";
+import { DateTime } from "../utilts";
 
 
 function Map(){
     const {listOfPlaces, setListOfPlaces} = useContext(PlacesContext) 
     const [selected, setSelected] = useState(null)
 
-
+    useEffect(() => {
+      localStorage.setItem("places", JSON.stringify(listOfPlaces))
+    }, [listOfPlaces])
+    
     return(
       <GoogleMap
         defaultZoom ={12}
@@ -34,6 +38,7 @@ function Map(){
               lat: event.latLng.lat(), 
               lng: event.latLng.lng(), 
               placeId: uuidv4(),
+              pickupDate: DateTime()
             }])
         }}
       >

@@ -4,7 +4,7 @@
   justify-content:center;
   align-items:center;
   width:100vw;
-  height:100vh;
+  height:94vh;
   font-size: 18pt;
   font-weight:700;
 }
@@ -14,11 +14,11 @@
   justify-content:center;
   align-items:center;
   width:100vw;
-  height:100vh;
+  height:94vh;
 }
 .map-container {
     width: 100vw;
-    height: 100vh;
+    height: 94vh;
 }
 
 .logo {

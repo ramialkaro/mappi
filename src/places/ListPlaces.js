@@ -8,7 +8,8 @@ export default function ListPlaces() {
 
     const { listOfPlaces , setListOfPlaces} = useContext(PlacesContext)
 
-    const removePlace = (id) =>{
+    const removePlace = (e,id) =>{
+        e.preventDefault()
         var deleted = window.confirm(`Do you want to unpin this locaiton?`)
         var placesAfterFiler = listOfPlaces.filter(p => p.placeId !== id)
         deleted && localStorage.setItem("places", JSON.stringify(placesAfterFiler)) 
@@ -34,7 +35,7 @@ export default function ListPlaces() {
                     <ListItem 
                         alignItems="flex-start"
                         secondaryAction={
-                            <IconButton edge="end" aria-label="delete" color="error" onClick={e=>removePlace(place.placeId)}>
+                            <IconButton edge="end" aria-label="delete" color="error" onClick={e=>removePlace(e,place.placeId)}>
                                 <PushPinIcon />
                             </IconButton>
                         }
@@ -65,9 +66,9 @@ export default function ListPlaces() {
                                     component="span"
                                     variant="body2"
                                     color="text.primary">
-                                        details: 
+                                        Pickup Date: 
                                         </Typography>
-                                        {}    
+                                        {place.pickupDate}    
                                     </React.Fragment>
                                     </>
                             } />
@@ -79,7 +80,7 @@ export default function ListPlaces() {
                 )})
             }
             </List>
-            <Fab color="primary" style={{position:'absolute', right:16, bottom:65}} onClick={clearPlaces}>
+            <Fab color="primary" style={{position:'absolute', right:16, bottom:65}} onClick={()=>clearPlaces()}>
                 <Delete />
             </Fab>
             </>
