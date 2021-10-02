@@ -20,6 +20,7 @@ function Map(){
     useEffect(() => {
       localStorage.setItem("places", JSON.stringify(listOfPlaces))
     }, [listOfPlaces])
+    
     return(
       <GoogleMap
         defaultZoom ={12}
