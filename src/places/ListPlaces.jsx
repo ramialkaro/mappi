@@ -1,8 +1,8 @@
-import React, { useContext} from 'react'
+import React, { useContext, useEffect} from 'react'
 import { List, ListItem, Divider, ListItemText, Avatar, Typography, ListItemAvatar, IconButton, Fab } from '@mui/material'
 import { Delete, PushPin as PushPinIcon } from '@mui/icons-material'
-import Geocode from 'react-geocode'
 import {PlacesContext} from '../PlacesContext'
+import { GetPlaceDetailsByPlaceId } from '../utilts'
 
 export default function ListPlaces() {
 
@@ -11,7 +11,7 @@ export default function ListPlaces() {
     const removePlace = (e,id) =>{
         e.preventDefault()
         var deleted = window.confirm(`Do you want to unpin this locaiton?`)
-        var placesAfterFiler = listOfPlaces.filter(p => p.placeId !== id)
+        var placesAfterFiler = listOfPlaces.filter(p => p.id !== id)
         deleted && localStorage.setItem("places", JSON.stringify(placesAfterFiler)) 
         setListOfPlaces(placesAfterFiler)
     }
@@ -21,21 +21,45 @@ export default function ListPlaces() {
         isClear &&  localStorage.clear()
         setListOfPlaces([])
     }
-    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_KEY)
+   
+    useEffect(() => {
+        localStorage.setItem("places", JSON.stringify(listOfPlaces))
+      }, [listOfPlaces])
 
+    useEffect(() => {
+        listOfPlaces.map( place => 
+            GetPlaceDetailsByPlaceId(place.placeId)
+            .then(details => {
+                console.log(details)
+                /* setListOfPlaces(prevState => 
+                    [...prevState,
+                    {
+                        ...place,
+                        rating: details?.rating || null,
+                        opeing_hours: details?.opening_hours?.weekday_text || null,
+                        formatted_phone_number: details?.formatted_phone_number || null,
+                        website: details?.website || null,
+                    }]
+                ) */
+            })
+        ) 
+        
+    }, [])
+    
     return (
         <>
         <List sx={{width:'100%', bgcolor:'background.paper'}}>
             {
                 
                 listOfPlaces && listOfPlaces.map(place=>{
+                   
                    return(
-                <div  key={place.placeId}>
+                <div  key={place.id}>
                     <>
                     <ListItem 
                         alignItems="flex-start"
                         secondaryAction={
-                            <IconButton edge="end" aria-label="delete" color="error" onClick={e=>removePlace(e,place.placeId)}>
+                            <IconButton edge="end" aria-label="delete" color="error" onClick={e=>removePlace(e,place.id)}>
                                 <PushPinIcon />
                             </IconButton>
                         }
@@ -44,7 +68,7 @@ export default function ListPlaces() {
                             <Avatar src="./place.png"/>
                             </ListItemAvatar>
                         <ListItemText 
-                            primary={place.placeId}
+                            primary={`Address: ${place.address}`}
                             secondary={
                                 <>
                                 <React.Fragment>
@@ -53,14 +77,27 @@ export default function ListPlaces() {
                                     component="span"
                                     variant="body2"
                                     color="text.primary">
-                                        address: 
+                                        opens: 
                                         </Typography>
                                         {
                                            
                                         }    
-                                    </React.Fragment>
+                                </React.Fragment>
                                     <br/>
-                                    <React.Fragment>
+                                <React.Fragment>
+                                    <Typography
+                                    sx={{display:'inline'}}
+                                    component="span"
+                                    variant="body2"
+                                    color="text.primary">
+                                        rating: 
+                                        </Typography>
+                                        {
+                                           place.rating
+                                        }    
+                                </React.Fragment>
+                                    <br/>
+                                <React.Fragment>
                                     <Typography
                                     sx={{display:'inline'}}
                                     component="span"
@@ -69,7 +106,7 @@ export default function ListPlaces() {
                                         Pickup Date: 
                                         </Typography>
                                         {place.pickupDate}    
-                                    </React.Fragment>
+                                </React.Fragment>
                                     </>
                             } />
             
