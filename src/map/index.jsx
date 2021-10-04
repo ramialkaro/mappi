@@ -45,7 +45,7 @@ function Map() {
 
   return (
     <GoogleMap
-      defaultZoom={13}
+      defaultZoom={14}
       defaultOptions={{
         styles,
         disableDefaultUI: true,
